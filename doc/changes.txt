@@ -1,0 +1,66 @@
+New in 0.54
+Added hotkeys to raise and lower the sound volume, which saves. Mute the sounds by going to volume 0.0. Thanks Anibal for the suggestion!
+It appears to support long DMs now. Thanks Blake!
+New in 0.53
+Fixes the replies list
+New in 0.52
+Adds options dialog.
+Adds sounds!
+Added a recipient edit box to the DM GUI.
+Fixed dm's and events not coming through.
+New in 0.51
+Stops tweets from inserting backwards. Whoops?
+Reverts back to the old interface, New interface was very QTIsh and slow.
+New in 0.5
+Now you have more control over your audio! Check the menu/hotkeys file for more on that.
+Redesigned main interface to hopefully accomidate Low Vision users.
+New in 0.41
+Reenables tweet deletion.
+Fixes a few bugs.
+Adds force update buffer and reconnect streams options.
+
+New in 0.4
+Adds block/unblock options
+Adds an open URL option.
+Changes a few keys
+Adds a reply all option
+No longer selecting the person in the tweet by default, go ahead and type away.
+The send button is now the default button in tweet dialogs. Just press enter!
+
+New in 0.3
+Recoded how quoting is done, making loading a bit faster.
+Fixes some RT texts are truncated.
+Adds times shown in the lists.
+Changes how view tweet works.
+Adds delete tweet option
+
+New in 0.25
+Adds playback of audio tweets
+
+New in 0.24
+Fixes bugs
+Adds hotkeys
+
+New in 0.23
+Attempting to fix JAWS and VoiceOver not reading the labels.
+
+New in 0.22
+Fixed edit profile for those who didn't fill out their entire profile.
+Added option to edit tweet.
+
+New in 0.21
+Added Quoted Tweets support, both writing and viewing.
+Added auto expanding of Twishort posts.
+Added editing profile.
+
+New in 0.2
+Makes the loading happen threaded, 10 times faster.
+Adds basic tweet parsing (expanding of URL's, removal of photo links)
+Adds a View user option in a user menu.
+
+New in 0.11
+Adds a view option.
+Adds basic event handling.
+Adds favorite and unfavorite options.
+Makes the app backfill before the window is opened to avoid non-responsiveness.
+Adds a replies list.

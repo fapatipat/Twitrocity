@@ -1,0 +1,14 @@
+Control+T: Tweet
+Control+R: Reply
+Control+Shift+R: Reply all.
+Control+shift+T: retweet
+control+shift+q: Quote
+control+shift+U: View user.
+control+shift+V: View tweet.
+control+enter: Play audio
+shift+enter: Pause audio.
+control+shift+enter: Stop audio.
+f5/f6: Adjust audio volume
+control up/down: Change sound volume.
+Enter: Open URL.
+On mac, substitute control with command.

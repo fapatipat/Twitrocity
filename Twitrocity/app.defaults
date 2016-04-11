@@ -1,0 +1,5 @@
+[general]
+TWKey = string(default="")
+TWSecret = string(default="")
+soundpack = string(default="default")
+soundvol = float(default=1)
