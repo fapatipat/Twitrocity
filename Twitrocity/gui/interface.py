@@ -117,7 +117,7 @@ class MainGui(wx.Frame):
 		twindow.Show()
 	def Play(self, event):
 		control = self.get_focused_status()
-		twitter.play_audio(status.text)
+		twitter.play_audio(control.text)
 	def Stop(self,event):
 		twitter.stop_audio()
 
@@ -146,30 +146,10 @@ class MainGui(wx.Frame):
 		twitter.update_lists()
 
 	def Reply_all(self, event):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			inreply=twitter.find_users_in_tweet(twitter.tweets[listpos])
-			id=twitter.tweets[listpos].id
-			twindow=tweet.TweetGui(inreply,id)
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			inreply=twitter.find_users_in_tweet(twitter.replies[listpos])
-			id=twitter.replies[listpos].id
-			twindow=tweet.TweetGui(inreply,id)
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			inreply=twitter.find_users_in_tweet(twitter.favs[listpos])
-			id=twitter.favs[listpos].id
-			twindow=tweet.TweetGui(inreply,id)
-		elif control==self.dmlist:
-			listpos=self.dmlist.GetSelection()
-			try:
-				inreply=twitter.dms[listpos].sender.screen_name
-			except:
-				inreply=twitter.dms[listpos].direct_message['sender']['screen_name']
-			twindow=tweet.DMGui(inreply)
-		twindow.Show()
+		control = self.get_focused_status()
+		inreply=twitter.find_users_in_tweet(control)
+		id=control.id
+		twindow=tweet.TweetGui(inreply,id)
 
 	def Open_url(self, event):
 		text=self.find_text()
@@ -179,26 +159,9 @@ class MainGui(wx.Frame):
 		else:
 			speak.speak("No URL")
 	def Message(self, event):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			inreply=twitter.tweets[listpos].author.screen_name
-			twindow=tweet.DMGui(inreply)
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			inreply=twitter.replies[listpos].author.screen_name
-			twindow=tweet.DMGui(inreply)
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			inreply=twitter.favs[listpos].author.screen_name
-			twindow=tweet.DMGui(inreply)
-		elif control==self.dmlist:
-			listpos=self.dmlist.GetSelection()
-			try:
-				inreply=twitter.dms[listpos].sender.screen_name
-			except:
-				inreply=twitter.dms[listpos].direct_message['sender']['screen_name']
-			twindow=tweet.DMGui(inreply)
+		control = self.get_focused_status()
+		inreply=control.author.screen_name
+		twindow=tweet.DMGui(inreply)
 		twindow.Show()
 
 	def ViewUser(self, event):
@@ -215,22 +178,8 @@ class MainGui(wx.Frame):
 		twind=details.DetailsGui("Screen name: "+status.screen_name+"\nName: "+status.name+"\nLocation: "+status.location+"\nUser ID: "+status.id_str+"\nFriends: "+str(status.friends_count)+"\nFollowers: "+str(status.followers_count)+"\nTweets: "+str(status.statuses_count)+"\nFavorites: "+str(status.favourites_count)+"\nIn "+str(status.listed_count)+" lists\nProtected: "+str(status.protected)+"\nVerified: "+str(status.verified)+"\nDescription: "+status.description+"\nNotifications enabled: "+str(status.notifications)+"\nLanguage: "+status.lang+"\nURL: "+status.url+"\nCreation date: "+str(status.created_at)+"\nTime zone: "+status.time_zone,inreply)
 		twind.Show()
 	def get_user(self):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			inreply=twitter.tweets[listpos].author.screen_name
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			inreply=twitter.replies[listpos].author.screen_name
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			inreply=twitter.favs[listpos].author.screen_name
-		elif control==self.dmlist:
-			listpos=self.dmlist.GetSelection()
-			try:
-				inreply=twitter.dms[listpos].sender.screen_name
-			except:
-				inreply=twitter.dms[listpos].direct_message['sender']['screen_name']
+		control = self.get_focused_status()
+		inreply=control.author.screen_name
 		return inreply
 
 	def Follow(self, event):
@@ -254,63 +203,22 @@ class MainGui(wx.Frame):
 		twitter.Delete(status)
 
 	def Retweet(self, event):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			id=twitter.tweets[listpos].id
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			id=twitter.replies[listpos].id
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			id=twitter.favs[listpos].id
+		control = self.get_focused_status()
+		id=control.id
 		twitter.Retweet(id)
 
 	def Quote(self, event):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			id=twitter.tweets[listpos].id
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			id=twitter.replies[listpos].id
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			id=twitter.favs[listpos].id
+		control = self.get_focused_status()
+		id=control.id
 		t=tweet.QuoteGui(id)
 		t.Show()
 	def find_id(self):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			id=twitter.tweets[listpos].id
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			id=twitter.replies[listpos].id
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			id=twitter.favs[listpos].id
-		return id
+		control = self.get_focused_status()
+		return control.id
 
 	def find_text(self):
-		control = self.FindFocus()
-		if control==self.list:
-			listpos=self.list.GetSelection()
-			id=twitter.tweets[listpos].text
-		elif control==self.replylist:
-			listpos=self.replylist.GetSelection()
-			id=twitter.replies[listpos].text
-		elif control==self.favlist:
-			listpos=self.favlist.GetSelection()
-			id=twitter.favs[listpos].text
-		elif control==self.dmlist:
-			listpos=self.dmlist.GetSelection()
-			try:
-				id=twitter.dms[listpos].text
-			except:
-				id=twitter.dms[listpos].direct_message['text']
-		return id
-
+		control = self.get_focused_status()
+		return control.text
 	def Favorite(self, event):
 		id=self.find_id()
 		twitter.Favorite(id)

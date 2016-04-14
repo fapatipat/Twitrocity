@@ -1,4 +1,5 @@
 class timeline(object):
 	index=0
-	statuses=[]
-	list=None
+	def __init__(self):
+		self.statuses=[]
+		self.list=None

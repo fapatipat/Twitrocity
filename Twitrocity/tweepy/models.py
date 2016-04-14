@@ -210,8 +210,10 @@ class DirectMessage(Model):
     def parse(cls, api, json):
         dm = cls(api)
         for k, v in json.items():
-            if k == 'sender' or k == 'recipient':
+            if k == 'sender':
                 setattr(dm, 'author', User.parse(api, v))
+            if k == 'recipient':
+                setattr(dm, 'author2', User.parse(api, v))
             elif k == 'created_at':
                 setattr(dm, k, parse_datetime(v))
             else:
