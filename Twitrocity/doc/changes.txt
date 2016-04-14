@@ -1,3 +1,8 @@
+New in 0.61
+Removes reconnect and update streams because they're broken
+Adds tweet footer option to options dialog.
+New in 0.6
+Nothing you'd notice, but major under the hood construction. Let me know if anything's broke.
 New in 0.54
 Added hotkeys to raise and lower the sound volume, which saves. Mute the sounds by going to volume 0.0. Thanks Anibal for the suggestion!
 It appears to support long DMs now. Thanks Blake!

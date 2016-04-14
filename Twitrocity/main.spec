@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\mason\\Dropbox\\projects\\python\\git\\twitrocity'],
+             pathex=['C:\\Users\\mason\\Dropbox\\projects\\python\\git\\Twitrocity\\Twitrocity'],
              binaries=None,
              datas=None,
              hiddenimports=[],

@@ -6,6 +6,18 @@ import datetime
 import time
 import audio_player
 import speak
+from threading import Thread
+from httplib import HTTPConnection
+from urlparse import urlparse
+import twishort
+import re
+import gui
+from gui import ask
+import tweepy
+import webbrowser
+import config
+import wx
+
 snd=sound.sound()
 timelines=collections.OrderedDict()
 timelines['home']=timeline.timeline()
@@ -15,28 +27,13 @@ timelines['favorites']=timeline.timeline()
 timelines['events']=timeline.timeline()
 streaming=0
 player=audio_player.URLStream()
-from threading import Thread
-from httplib import HTTPConnection
-from urlparse import urlparse
-import twishort
-import re
 tw1="W48NhXLuPeP66yvcXXurhQPY6"
 tw2="jST5JRY7KK8tjyxEm6QcpIWrHrMWeHXqyNPsK5w0ohYd9L7kHu"
-import gui
-from gui import ask
 url_re = re.compile(r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?]))")
 url_re2 = re.compile("(?:\w+://|www\.)[^ ,.?!#%=+][^ ]*")
 bad_chars = "'\\.,[](){}:;\""
-import tweepy
-import webbrowser
-import config
-import wx
 api=None
 listener=None
-tweets=[]
-replies=[]
-dms=[]
-favs=[]
 screenname=""
 def Setup():
 	global soundpack
@@ -51,6 +48,8 @@ def Setup():
 	global f4
 	f4=0
 	streaming=0
+	global footer
+	footer=config.appconfig['general']['footer']
 	auth=tweepy.OAuthHandler(tw1, tw2)
 	if config.appconfig["general"]["TWKey"]=="" or config.appconfig["general"]["TWSecret"]=="":
 		webbrowser.open(auth.get_authorization_url())
@@ -121,8 +120,9 @@ class StreamListener(tweepy.StreamListener):
 		snd.play("event")
 
 	def on_direct_message(self, status):
-		status.direct_message['text']=parse(status.direct_message['text'])
-		speak.speak("Message from "+status.direct_message.author.name+": "+status.direct_message.text)
+		status.direct_message.author=status.direct_message.sender
+		status.direct_message.text=parse(status.direct_message.text)
+		speak.speak("Message from "+status.direct_message.author['name']+": "+status.direct_message.text)
 		snd.play("dm")
 		add_timeline_item("messages",status.direct_message)
 class ReplyListener(tweepy.StreamListener):
@@ -370,5 +370,10 @@ def add_timeline_item(n,item):
 			if n!="messages":
 				gui.interface.add_to_list(n,item.author.name+": "+item.text+"; from "+item.source)
 			else:
-				gui.interface.add_to_list(n,item.author.name+": "+item.text)
+				try:
+					gui.interface.add_to_list(n,item.author.name+": "+item.text)
+				except:
+					gui.interface.add_to_list(n,item.author['name']+": "+item.text)
+					pass
+
 			return

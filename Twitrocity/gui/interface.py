@@ -16,10 +16,6 @@ class MainGui(wx.Frame):
 		menu = wx.Menu()
 		m_update = menu.Append(-1, "Update profile", "Update Profile")
 		self.Bind(wx.EVT_MENU, self.UpdateProfile, m_update)
-		m_update_lists = menu.Append(-1, "Force-update lists", "Update Buffers")
-		self.Bind(wx.EVT_MENU, self.Update_lists, m_update_lists)
-		m_reconnect = menu.Append(-1, "Reconnect streams", "Update Profile")
-		self.Bind(wx.EVT_MENU, self.Reconnect, m_reconnect)
 		m_options = menu.Append(-1, "Options", "Update Profile")
 		self.Bind(wx.EVT_MENU, self.Options, m_options)
 		m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
@@ -109,7 +105,7 @@ class MainGui(wx.Frame):
 		opt=options.OptionsGui()
 		opt.Show()
 	def Tweet(self, event):
-		twindow=tweet.TweetGui()
+		twindow=tweet.TweetGui(twitter.footer)
 		twindow.Show()
 	def Edit(self, event):
 		control = self.get_focused_status()
@@ -136,7 +132,12 @@ class MainGui(wx.Frame):
 
 	def Reply(self, event):
 		control = self.get_focused_status()
-		twindow=tweet.TweetGui("@"+control.author.screen_name+" ",control.id)
+		try:
+			twindow=tweet.TweetGui("@"+control.author.screen_name+" ",control.id)
+
+		except:
+			twindow=tweet.TweetGui("@"+control.author.screen_name+" ",control.id)
+			pass
 		twindow.Show()
 
 	def Reconnect(self, event):
@@ -160,7 +161,11 @@ class MainGui(wx.Frame):
 			speak.speak("No URL")
 	def Message(self, event):
 		control = self.get_focused_status()
-		inreply=control.author.screen_name
+		try:
+			inreply=control.author.screen_name
+		except:
+			inreply=control.author['screen_name']
+			pass
 		twindow=tweet.DMGui(inreply)
 		twindow.Show()
 
@@ -179,7 +184,12 @@ class MainGui(wx.Frame):
 		twind.Show()
 	def get_user(self):
 		control = self.get_focused_status()
-		inreply=control.author.screen_name
+		try:
+			inreply=control.author.screen_name
+		except:
+			inreply=control.author['screen_name']
+			pass
+
 		return inreply
 
 	def Follow(self, event):

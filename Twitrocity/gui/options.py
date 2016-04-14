@@ -20,6 +20,11 @@ class OptionsGui(wx.Frame):
 			if twitter.soundpack==dirs[i]:
 				self.sp=dirs[i]
 				self.soundpackslist.SetSelection(i)
+		self.text_label = wx.StaticText(self.panel, -1, "Tweet Footer (Optional)")
+		self.footer = wx.TextCtrl(self.panel, -1, "",style=wx.TE_MULTILINE)
+		self.main_box.Add(self.footer, 0, wx.ALL, 10)
+		self.footer.AppendText(config.appconfig['general']['footer'])
+		self.footer.SetMaxLength(140)
 		self.ok = wx.Button(self.panel, wx.ID_OK, "&OK")
 		self.ok.Bind(wx.EVT_BUTTON, self.OnOK)
 		self.main_box.Add(self.ok, 0, wx.ALL, 10)
@@ -32,8 +37,10 @@ class OptionsGui(wx.Frame):
 		self.sp=event.GetString()
 	def OnOK(self, event):
 		config.appconfig['general']['soundpack']=self.sp
+		config.appconfig['general']['footer']=self.footer.GetValue()
 		config.appconfig.write()
 		twitter.soundpack=self.sp
+		twitter.footer=config.appconfig['general']['footer']
 		self.Destroy()
 	def OnClose(self, event):
 		self.Destroy()
