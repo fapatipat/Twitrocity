@@ -38,15 +38,6 @@ screenname=""
 def Setup():
 	global soundpack
 	soundpack=config.appconfig['general']['soundpack']
-	snd.play("welcome")
-	global f1
-	f1=0
-	global f2
-	f2=0
-	global f3
-	f3=0
-	global f4
-	f4=0
 	streaming=0
 	global footer
 	footer=config.appconfig['general']['footer']
@@ -73,6 +64,7 @@ def Setup():
 	global Stream2
 	Stream = tweepy.Stream(auth = api.auth, listener=listener)
 	Stream2 = tweepy.Stream(auth = api.auth, listener=listener2)
+	snd.play("welcome")
 	gui.interface.spawn()
 
 def backfill():
@@ -189,10 +181,8 @@ def bf1(id=None):
 	for i in range(len(bft)):
 		status=bft[i]
 		status.text=parse(status.text,status)
-		add_timeline_item("home",status)
-	global f1
-	f1=1
-	checkstreaming()
+		add_timeline_item("home",status,False)
+	timelines['home'].make_ready("home")
 def bf2(id=None):
 	if id!=None:
 		bft=api.search(count=100,q="@"+screenname,since_id=id)
@@ -202,33 +192,26 @@ def bf2(id=None):
 	for i in range(len(bft)):
 		status=bft[i]
 		status.text=parse(status.text)
-		add_timeline_item("replies",status)
-	global f2
-	f2=1
-	checkstreaming()
+		add_timeline_item("replies",status,False)
+	timelines['replies'].make_ready("replies")
 def bf3():
 	bft=api.favorites(count=200,q="@"+screenname)
 	bft.reverse()
 	for i in range(len(bft)):
 		status=bft[i]
 		status.text=parse(status.text)
-		add_timeline_item("favorites",status)
-	global f3
-	f3=1
-	checkstreaming()
+		add_timeline_item("favorites",status,False)
+	timelines['favorites'].make_ready("favorites")
 def bf4():
 	bft=api.direct_messages(count=100,full_text=True)
 	bft.reverse()
 	for i in range(len(bft)):
 		status=bft[i]
 		status.text=parse(status.text)
-		add_timeline_item("messages",status)
-	global f4
-	f4=1
-	checkstreaming()
-def checkstreaming():
-	if f1==1 and f2==1 and f3==1 and f4==1:
-		streaming=reconnect_streams(0)
+		add_timeline_item("messages",status,False)
+	timelines['messages'].make_ready("messages")
+def check_streams():
+	streaming=reconnect_streams(0)
 def UpdateProfile(name,url,location,description):
 	api.update_profile(name,url,location,description)
 def exit():
@@ -242,12 +225,7 @@ def Quote(status,text):
 def Delete(status):
 	api.destroy_status(status)
 def play_audio(text):
-	try:
-		url=find_urls_in_text(text)
-		player.play(url[0])
-	except:
-		speak.speak("Error. Unable to play.")
-def play_audio(text):
+	player.stop_audio()
 	try:
 		url=find_urls_in_text(text)
 		player.play(url[0])
@@ -325,8 +303,8 @@ def delete_item(list, index):
 		gui.interface.delete_fav(index)
 		favs.pop(index)
 def find_users_in_tweet(status):
+	new="@"+status.author.screen_name+" "
 	try:
-		new="@"+status.author.screen_name+" "
 		if status!=None and status!="" and status.quoted_status:
 			new+="@"+status.quoted_status.author.screen_name+" "
 	except:
@@ -356,24 +334,21 @@ def reconnect_streams(pull=1,streaming=streaming):
 
 		streaming=1
 		snd.play("ready")
-def update_lists():
-	status=tweets[len(tweets)-1]
-	bf1(status.id)
-	status=replies[len(replies)-2]
-	bf2(status.id)
-	snd.play("ready")
-	return streaming
-def add_timeline_item(n,item):
+def add_timeline_item(n,item, streaming=True):
 	for i in timelines.keys():
 		if i==n:
-			timelines[i].statuses.append(item)
-			if n!="messages":
-				gui.interface.add_to_list(n,item.author.name+": "+item.text+"; from "+item.source)
-			else:
-				try:
-					gui.interface.add_to_list(n,item.author.name+": "+item.text)
-				except:
-					gui.interface.add_to_list(n,item.author['name']+": "+item.text)
-					pass
+			if timelines[i].ready==True and streaming==False or timelines[i].ready==False and streaming==False or timelines[i].ready==True and streaming==True:
+				timelines[i].statuses.append(item)
+			elif timelines[i].ready==False and streaming==True:
+				timelines[i].pending.append(item)
+			if timelines[i].ready==True and streaming==False or timelines[i].ready==False and streaming==False or timelines[i].ready==True and streaming==True:
+				if n!="messages":
+					gui.interface.add_to_list(n,item.author.name+": "+item.text+"; "+parse_date(item.created_at)+"; from "+item.source)
+				else:
+					try:
+						gui.interface.add_to_list(n,item.author.name+": "+item.text+"; "+parse_date(item.created_at))
+					except:
+						gui.interface.add_to_list(n,item.author['name']+": "+item.text+"; "+parse_date(item.created_at))
+						pass
 
 			return

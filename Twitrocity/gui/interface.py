@@ -136,7 +136,7 @@ class MainGui(wx.Frame):
 			twindow=tweet.TweetGui("@"+control.author.screen_name+" ",control.id)
 
 		except:
-			twindow=tweet.TweetGui("@"+control.author.screen_name+" ",control.id)
+			twindow=tweet.TweetGui("@"+control.author['screen_name']+" ",control.id)
 			pass
 		twindow.Show()
 
@@ -151,6 +151,7 @@ class MainGui(wx.Frame):
 		inreply=twitter.find_users_in_tweet(control)
 		id=control.id
 		twindow=tweet.TweetGui(inreply,id)
+		twindow.Show()
 
 	def Open_url(self, event):
 		text=self.find_text()

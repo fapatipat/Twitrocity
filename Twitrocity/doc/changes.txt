@@ -1,3 +1,10 @@
+New in 0.62
+Some fixes to playing audio.
+Removed word wrap from the new tweet dialog.
+Stability and performance improvements.
+Fixes reply all option
+Fixes Messages.
+Now the welcome sound plays after it actually manages to log in.
 New in 0.61
 Removes reconnect and update streams because they're broken
 Adds tweet footer option to options dialog.
