@@ -1,3 +1,5 @@
+New in 0.63
+Reimplements Reconnect Streams
 New in 0.62
 Some fixes to playing audio.
 Removed word wrap from the new tweet dialog.

@@ -322,9 +322,9 @@ def find_users_in_tweet(status):
 def reconnect_streams(pull=1,streaming=streaming):
 	if streaming==0:
 		if pull==1:
-			status=tweets[len(tweets)-2]
+			status=timelines['home'].statuses[len(timelines['home'].statuses)-2]
 			bf1(status.id)
-			status=replies[len(replies)-2]
+			status=timelines['replies'].statuses[len(timelines['replies'].statuses)-2]
 			bf2(status.id)
 		try:
 			Stream.userstream("with=following",async=True)

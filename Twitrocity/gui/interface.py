@@ -16,6 +16,8 @@ class MainGui(wx.Frame):
 		menu = wx.Menu()
 		m_update = menu.Append(-1, "Update profile", "Update Profile")
 		self.Bind(wx.EVT_MENU, self.UpdateProfile, m_update)
+		m_reconnect = menu.Append(-1, "Reconnect streams", "Reconnect streams")
+		self.Bind(wx.EVT_MENU, self.Reconnect, m_reconnect)
 		m_options = menu.Append(-1, "Options", "Update Profile")
 		self.Bind(wx.EVT_MENU, self.Options, m_options)
 		m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
