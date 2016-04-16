@@ -24,7 +24,6 @@ timelines['home']=timeline.timeline()
 timelines['replies']=timeline.timeline()
 timelines['messages']=timeline.timeline()
 timelines['favorites']=timeline.timeline()
-timelines['events']=timeline.timeline()
 streaming=0
 player=audio_player.URLStream()
 tw1="W48NhXLuPeP66yvcXXurhQPY6"
@@ -36,6 +35,8 @@ api=None
 listener=None
 screenname=""
 def Setup():
+	global events
+	events=[]
 	global soundpack
 	soundpack=config.appconfig['general']['soundpack']
 	streaming=0
@@ -108,9 +109,21 @@ class StreamListener(tweepy.StreamListener):
 		snd.play("tweet")
 
 	def on_event(self, status):
-		add_timeline_item("events",status)
 		snd.play("event")
-
+		if status.event=="quoted_tweet":
+			events.append("Quote from "+status.source['name']+" ("+status.source['screen_name']+": "+parse(status.target_object['text'],status.target_object)+"; "+parse_date(status.created_at))
+		if status.event=="favorite":
+			events.append("Favorite from "+status.source['name']+" ("+status.source['screen_name']+": "+parse(status.target_object['text'],status.target_object)+"; "+parse_date(status.created_at))
+		if status.event=="unfavorite":
+			events.append("Unfavorite from "+status.source['name']+" ("+status.source['screen_name']+": "+parse(status.target_object['text'],status.target_object)+"; "+parse_date(status.created_at))
+		if status.event=="block":
+			events.append("Blocked "+status.target['name']+" ("+status.target['screen_name']+"); "+parse_date(status.created_at))
+		if status.event=="unblock":
+			events.append("Unblocked "+status.target['name']+" ("+status.target['screen_name']+"); "+parse_date(status.created_at))
+		if status.event=="follow":
+			events.append(status.source['name']+" ("+status.source['screen_name']+") Followed "+status.target['name']+" ("+status.target['screen_name']+"); "+parse_date(status.created_at))
+		if status.event=="unfollow":
+			events.append(status.source['name']+" ("+status.source['screen_name']+") Unfollowed "+status.target['name']+" ("+status.target['screen_name']+"); "+parse_date(status.created_at))
 	def on_direct_message(self, status):
 		status.direct_message.author=status.direct_message.sender
 		status.direct_message.text=parse(status.direct_message.text)
@@ -140,7 +153,11 @@ def unshorten(url):
 def parse(text,status=""):
 	try:
 		if status!=None and status!="" and status.quoted_status:
-			new=" Quoting "+status.quoted_status.author.name+" (@"+status.quoted_status.author.screen_name+": "+status.quoted_status.text
+			try:
+				new=" Quoting "+status.quoted_status.author.name+" (@"+status.quoted_status.author.screen_name+": "+status.quoted_status.text
+			except:
+				new=" Quoting "+status['quoted_status']['author']['name']+" (@"+status['quoted_status']['author']['screen_name']+": "+status['quoted_status']['text']
+
 			text+=new
 			original=""
 	except:

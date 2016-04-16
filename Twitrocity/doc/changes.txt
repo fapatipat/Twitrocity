@@ -1,3 +1,6 @@
+New in 0.64
+Reimplements events that actually, ya know, work? Check application menu
+Rips out events timeline, it wasn't working and I'm going to code a dialog for events.
 New in 0.63
 Reimplements Reconnect Streams
 New in 0.62

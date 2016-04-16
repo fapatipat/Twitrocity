@@ -5,7 +5,7 @@ import webbrowser
 import tweet
 import wx
 import twitter
-import ask, details,options,profile
+import ask, details,events,options,profile
 class MainGui(wx.Frame):
 	def __init__(self, title):
 		wx.Frame.__init__(self, None, title=title, size=(350,200)) # initialize the wx frame
@@ -18,7 +18,9 @@ class MainGui(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.UpdateProfile, m_update)
 		m_reconnect = menu.Append(-1, "Reconnect streams", "Reconnect streams")
 		self.Bind(wx.EVT_MENU, self.Reconnect, m_reconnect)
-		m_options = menu.Append(-1, "Options", "Update Profile")
+		m_events = menu.Append(-1, "Events", "Events")
+		self.Bind(wx.EVT_MENU, self.Events, m_events)
+		m_options = menu.Append(-1, "Options", "Options")
 		self.Bind(wx.EVT_MENU, self.Options, m_options)
 		m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
 		self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
@@ -106,6 +108,9 @@ class MainGui(wx.Frame):
 	def Options(self, event):
 		opt=options.OptionsGui()
 		opt.Show()
+	def Events(self, event):
+		event=events.EventsGui()
+		event.Show()
 	def Tweet(self, event):
 		twindow=tweet.TweetGui(twitter.footer)
 		twindow.Show()
