@@ -78,11 +78,17 @@ def backfill():
 	t4 = Thread(target=bf4)
 	t4.start()
 def Tweet(text,id):
-	if id!="":
-		api.update_status(text,id)
-	else:
-		api.update_status(text)
-	snd.play("sendtweet")
+	try:
+		if id!="":
+			api.update_status(text,id)
+		else:
+			api.update_status(text)
+			snd.play("sendtweet")
+		return True
+	except Exception as e:
+		snd.play("error")
+		speak.speak(str(e))
+		return False
 def Retweet(id):
 	api.retweet(id)
 	snd.play("sendtweet")
@@ -137,6 +143,12 @@ class ReplyListener(tweepy.StreamListener):
 		add_timeline_item("replies",status)
 		snd.play("reply")
 
+class UserListener(tweepy.StreamListener):
+	def on_status(self, status):
+		status.text=parse(status.text)
+		speak.speak("Tweet from "+status.author.name+": "+status.text)
+		add_timeline_item(status.author.screen_name,status)
+
 def find_urls_in_text(text):
  return [s.strip(bad_chars) for s in url_re2.findall(text)]
 def unshorten(url):
@@ -188,6 +200,15 @@ def parse(text,status=""):
 			text=text
 
 	return text
+def bfc(tl):
+	bft=api.user_timeline(screen_name=tl, count=100)
+	i2=len(bft)-1
+	bft.reverse()
+	for i in range(len(bft)):
+		status=bft[i]
+		status.text=parse(status.text,status)
+		add_timeline_item(tl,status,False)
+	timelines[tl].make_ready(tl)
 def bf1(id=None):
 	if id!=None:
 		bft=api.home_timeline(count=100,since_id=id)
@@ -229,6 +250,14 @@ def bf4():
 	timelines['messages'].make_ready("messages")
 def check_streams():
 	streaming=reconnect_streams(0)
+def create_user_timeline(user):
+	id=api.get_user(user)
+	timelines[user]=timeline.timeline(user)
+	gui.interface.new_list(user)
+	listen=UserListener()
+	stuff = tweepy.Stream(auth = api.auth, listener=listen)
+	s=stuff.filter(follow=[id.id_str],async=True)
+	bfc(user)
 def UpdateProfile(name,url,location,description):
 	api.update_profile(name,url,location,description)
 def exit():
@@ -246,11 +275,12 @@ def play_audio(text):
 	try:
 		url=find_urls_in_text(text)
 		player.play(url[0])
-	except:
+	except Exception as e1:
 		try:
 			player.play(url[0])
-		except:
-			speak.speak("Error: Unable to play")
+		except Exception as e2:
+			speak.speak("Error: "+str(e1)+" "+str(e2))
+			pass
 def stop_audio():
 	player.stop_audio()
 def pause_audio():

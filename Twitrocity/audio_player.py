@@ -29,6 +29,14 @@ class URLStream(object):
    self.stream.volume = float(volume)
    self.stream.play()
 
+ def play_raw(self, url=None, volume=0.3, stream=None):
+  if stream != None:
+   self.stream=stream
+  self.stream = sound_lib.stream.URLStream(url=self.url)
+  if hasattr(self,'stream'):
+   self.stream.volume = float(volume)
+   self.stream.play()
+
  def stop_audio(self,delete=False):
   if hasattr(self, "stream"):
    self.stream.stop()

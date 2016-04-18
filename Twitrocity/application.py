@@ -1,3 +1,3 @@
 name="Twitrocity"
-version="0.64"
+version="0.65"
 author="Ultrocity Audio"

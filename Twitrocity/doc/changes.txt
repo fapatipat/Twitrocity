@@ -1,3 +1,9 @@
+New in 0.70
+Adds user timelines!
+Adds tweet characters into the tweet dialog title.
+The maximum boundary sound now plays once you've run out of characters.
+Error messages for posting unpostable tweets.
+More descriptive error messages for why audio can't play
 New in 0.64
 Reimplements events that actually, ya know, work? Check application menu
 Rips out events timeline, it wasn't working and I'm going to code a dialog for events.

@@ -18,6 +18,8 @@ class TweetGui(wx.Frame):
 		self.text = wx.TextCtrl(self.panel, -1, "",style=wx.TE_MULTILINE|wx.TE_PROCESS_ENTER|wx.TE_DONTWRAP)
 		self.main_box.Add(self.text, 0, wx.ALL, 10)
 		self.text.Bind(wx.EVT_TEXT_ENTER, self.Tweet)
+		self.text.Bind(wx.EVT_TEXT_MAXLEN, self.Maximum)
+		self.text.Bind(wx.EVT_TEXT, self.Chars)
 		self.text.AppendText(inittext)
 		#self.text.SetSelection(self.text.GetLastPosition()-1,self.text.GetLastPosition())
 		self.text.SetMaxLength(140)
@@ -30,11 +32,18 @@ class TweetGui(wx.Frame):
 		self.close.Bind(wx.EVT_BUTTON, self.OnClose)
 		self.main_box.Add(self.close, 0, wx.ALL, 10)
 		self.panel.Layout()
+	def Maximum(self,event):
+		twitter.snd.play("boundary")
+	def Chars(self, event):
+		length=round(len(self.text.GetValue()),0)
+		percent=str(round((length/140)*100,0))
+		self.SetLabel("Tweet - "+str(length).split(".")[0]+" of 140 characters ("+percent+" Percent)")
 	def Tweet(self, event):
 		if self.edit==1:
 			twitter.Delete(self.id)
-		twitter.Tweet(self.text.GetValue(),self.id)
-		self.Destroy()
+		status=twitter.Tweet(self.text.GetValue(),self.id)
+		if status==True:
+			self.Destroy()
 	def OnClose(self, event):
 		"""App close event handler"""
 		self.Destroy()
@@ -104,8 +113,9 @@ class DMGui(wx.Frame):
 		self.main_box.Add(self.close, 0, wx.ALL, 10)
 		self.panel.Layout()
 	def Tweet(self, event):
-		twitter.Tweet("d @"+self.recip.GetValue()+" "+self.text.GetValue(),0)
-		self.Destroy()
+		status=twitter.Tweet("d @"+self.recip.GetValue()+" "+self.text.GetValue(),0)
+		if status==True:
+			self.Destroy()
 	def OnClose(self, event):
 		"""App close event handler"""
 		self.Destroy()

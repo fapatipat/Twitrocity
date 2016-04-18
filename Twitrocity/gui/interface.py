@@ -64,6 +64,10 @@ class MainGui(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.Unblock, m_unblock)
 		self.menuBar.Append(menu, "&User")
 		menu = wx.Menu()
+		m_timeline = menu.Append(-1, "&User Timeline", "User TL")
+		self.Bind(wx.EVT_MENU, self.Timeline, m_timeline)
+		self.menuBar.Append(menu, "&Timelines")
+		menu = wx.Menu()
 		m_play = menu.Append(-1, "&Play audio", "Play")
 		self.Bind(wx.EVT_MENU, self.Play, m_play)
 		m_pause = menu.Append(-1, "&Pause audio", "Pause")
@@ -200,6 +204,10 @@ class MainGui(wx.Frame):
 
 		return inreply
 
+	def Timeline(self, event):
+		twindow=ask.ask(message="Open which timeline?",default_value=self.get_user())
+		twitter.create_user_timeline(twindow)
+
 	def Follow(self, event):
 		twindow=ask.ask(message="Follow who?",default_value=self.get_user())
 		status=twitter.Follow(twindow)
@@ -267,6 +275,10 @@ def spawn():
 		list_label=wx.StaticText(window.panel, -1, twitter.timelines.keys()[i])
 		twitter.timelines[twitter.timelines.keys()[i]].list=wx.ListBox(window.panel, -1)
 		window.main_box.Add(twitter.timelines[twitter.timelines.keys()[i]].list, 0, wx.ALL, 10)
+def new_list(i):
+	list_label=wx.StaticText(window.panel, -1, i)
+	twitter.timelines[i].list=wx.ListBox(window.panel, -1)
+	window.main_box.Add(twitter.timelines[i].list, 0, wx.ALL, 10)
 def add_to_list(name,text):
 	twitter.timelines[name].list.Insert(text,twitter.timelines[name].list.GetCount())
 global window
