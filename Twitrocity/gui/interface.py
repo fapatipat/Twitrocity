@@ -9,6 +9,7 @@ import ask, details,events,options,profile
 class MainGui(wx.Frame):
 	def __init__(self, title):
 		wx.Frame.__init__(self, None, title=title, size=(350,200)) # initialize the wx frame
+		self.Center()
 		self.Bind(wx.EVT_CLOSE, self.OnClose)
 		self.panel = wx.Panel(self)
 		self.main_box = wx.BoxSizer(wx.VERTICAL)

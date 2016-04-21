@@ -1,3 +1,5 @@
+New in 0.71
+Some changes for visually impaired users
 New in 0.70
 Adds user timelines!
 Adds tweet characters into the tweet dialog title.

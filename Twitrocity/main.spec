@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
+a = Analysis(['C:\\Users\\mason\\Dropbox\\projects\\python\\git\\Twitrocity\\Twitrocity\\main.py'],
              pathex=['C:\\Users\\mason\\Dropbox\\projects\\python\\git\\Twitrocity\\Twitrocity'],
              binaries=None,
              datas=None,
@@ -12,22 +12,17 @@ a = Analysis(['main.py'],
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
-             win_private_assemblies=False,
+             win_private_assemblies=True,
              cipher=block_cipher)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          exclude_binaries=True,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
           name='main',
           debug=False,
           strip=False,
           upx=True,
           console=False )
-coll = COLLECT(exe,
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               name='main')
