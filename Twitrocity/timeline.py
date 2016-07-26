@@ -3,6 +3,9 @@ import gui
 class timeline(object):
 	index=0
 	def __init__(self,type=""):
+		self.listen=0
+		self.f=0
+		self.stream=0
 		self.ready=False
 		self.statuses=[]
 		self.type=type

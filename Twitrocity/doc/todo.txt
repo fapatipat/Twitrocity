@@ -1,2 +1,1 @@
-Bookmarks, mark a tweet, then get back to it.
-make events say what they are.
+Bookmarks, mark a tweet, then get back to it

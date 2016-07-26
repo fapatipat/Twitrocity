@@ -1,3 +1,4 @@
+import platform
 import collections
 import application
 import speak
@@ -8,7 +9,7 @@ import twitter
 import ask, details,events,options,profile
 class MainGui(wx.Frame):
 	def __init__(self, title):
-		wx.Frame.__init__(self, None, title=title, size=(350,200)) # initialize the wx frame
+		wx.Frame.__init__(self, None, title=title, size=(370,600)) # initialize the wx frame
 		self.Center()
 		self.Bind(wx.EVT_CLOSE, self.OnClose)
 		self.panel = wx.Panel(self)
@@ -21,7 +22,7 @@ class MainGui(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.Reconnect, m_reconnect)
 		m_events = menu.Append(-1, "Events", "Events")
 		self.Bind(wx.EVT_MENU, self.Events, m_events)
-		m_options = menu.Append(-1, "Options", "Options")
+		m_options = menu.Append(wx.ID_PREFERENCES, "Options", "Options")
 		self.Bind(wx.EVT_MENU, self.Options, m_options)
 		m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
 		self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
@@ -105,6 +106,9 @@ class MainGui(wx.Frame):
 		accel.append((wx.ACCEL_CTRL, wx.WXK_DOWN, m_svolume_down.GetId()))
 		accel.append((wx.ACCEL_SHIFT, wx.WXK_RETURN, m_pause.GetId()))
 		accel.append((wx.ACCEL_NORMAL, wx.WXK_RETURN, m_open_url.GetId()))
+		if platform.system=="Darwin":
+			accel.append((wx.ACCEL_CTRL, ord(','), m_options.GetId()))
+
 		accel_tbl=wx.AcceleratorTable(accel)
 		self.SetAcceleratorTable(accel_tbl)
 		self.panel.Layout()
@@ -274,11 +278,11 @@ class MainGui(wx.Frame):
 def spawn():
 	for i in range(len(twitter.timelines.keys())):
 		list_label=wx.StaticText(window.panel, -1, twitter.timelines.keys()[i])
-		twitter.timelines[twitter.timelines.keys()[i]].list=wx.ListBox(window.panel, -1)
+		twitter.timelines[twitter.timelines.keys()[i]].list=wx.ListBox(window.panel, -1,size=(1200,800))
 		window.main_box.Add(twitter.timelines[twitter.timelines.keys()[i]].list, 0, wx.ALL, 10)
 def new_list(i):
 	list_label=wx.StaticText(window.panel, -1, i)
-	twitter.timelines[i].list=wx.ListBox(window.panel, -1)
+	twitter.timelines[i].list=wx.ListBox(window.panel, -1,size=(1200,800))
 	window.main_box.Add(twitter.timelines[i].list, 0, wx.ALL, 10)
 def add_to_list(name,text):
 	twitter.timelines[name].list.Insert(text,twitter.timelines[name].list.GetCount())

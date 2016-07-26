@@ -1,3 +1,4 @@
+import os
 import collections
 import timeline
 import sound
@@ -254,15 +255,14 @@ def create_user_timeline(user):
 	id=api.get_user(user)
 	timelines[user]=timeline.timeline(user)
 	gui.interface.new_list(user)
-	listen=UserListener()
-	stuff = tweepy.Stream(auth = api.auth, listener=listen)
-	s=stuff.filter(follow=[id.id_str],async=True)
+	timelines[user].listen=UserListener()
+	timelines[user].stream = tweepy.Stream(auth = api.auth, listener=timelines[user].listen)
+	timelines[user].f=timelines[user].stream.filter(follow=[id.id_str],async=True)
 	bfc(user)
 def UpdateProfile(name,url,location,description):
 	api.update_profile(name,url,location,description)
 def exit():
-	listener.Disconnect()
-	listener2.Disconnect()
+	os._exit(0)
 def Quote(status,text):
 	a=api.get_status(status)
 	text+=" https://twitter.com/"+a.author.screen_name+"/status/"+str(status)
